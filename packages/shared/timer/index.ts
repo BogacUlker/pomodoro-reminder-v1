@@ -11,7 +11,7 @@ export const DEFAULT_CONFIG: TimerConfig = {
 
 export class PomodoroTimer {
   private config: TimerConfig;
-  private intervalId: NodeJS.Timeout | null = null;
+  private intervalId: ReturnType<typeof setInterval> | null = null;
   private callbacks: {
     onTick?: (timeRemaining: number) => void;
     onComplete?: () => void;

@@ -1,0 +1,37 @@
+{
+  "name": "pomodoro-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Context-aware Pomodoro timer with intelligent reminder management",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web-demo",
+    "build": "npm run build --workspace=apps/web-demo",
+    "lint": "npm run lint --workspaces --if-present",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules"
+  },
+  "keywords": [
+    "pomodoro",
+    "productivity",
+    "timer",
+    "reminders",
+    "react-native",
+    "expo"
+  ],
+  "author": "Bogac Ulker",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BogacUlker/pomodoro-reminder-v1.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13"
+  }
+}

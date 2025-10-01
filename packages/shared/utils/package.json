@@ -1,0 +1,10 @@
+{
+  "name": "@pomodoro/utils",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "types": "index.ts",
+  "private": true,
+  "dependencies": {
+    "@pomodoro/types": "*"
+  }
+}

@@ -22,6 +22,7 @@ interface TimerState {
   setCurrentSession: (session: number) => void;
   setTestMode: (enabled: boolean) => void;
   resetTimer: () => void;
+  completeSession: () => void;
 }
 
 const timer = new PomodoroTimer(DEFAULT_CONFIG);
@@ -108,6 +109,56 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       timeRemaining: get().testMode ? 10 : timer.getDuration('work'),
       currentSession: 1,
     });
+    get().saveTimerState();
+  },
+
+  // Complete current session and progress to next
+  completeSession: () => {
+    const state = get();
+
+    // Work session completed
+    if (state.timerType === 'work') {
+      const nextSession = state.currentSession;
+
+      // Determine next break type
+      if (nextSession >= 4) {
+        // Long break after 4th work session
+        set({
+          timerType: 'longBreak',
+          timeRemaining: state.testMode ? 10 : timer.getDuration('longBreak'),
+          status: 'idle',
+        });
+      } else {
+        // Short break after 1st, 2nd, 3rd work sessions
+        set({
+          timerType: 'shortBreak',
+          timeRemaining: state.testMode ? 10 : timer.getDuration('shortBreak'),
+          status: 'idle',
+        });
+      }
+    }
+    // Break completed
+    else {
+      // After long break, reset to session 1
+      if (state.timerType === 'longBreak') {
+        set({
+          timerType: 'work',
+          timeRemaining: state.testMode ? 10 : timer.getDuration('work'),
+          currentSession: 1,
+          status: 'idle',
+        });
+      }
+      // After short break, increment session and start work
+      else {
+        set({
+          timerType: 'work',
+          timeRemaining: state.testMode ? 10 : timer.getDuration('work'),
+          currentSession: state.currentSession + 1,
+          status: 'idle',
+        });
+      }
+    }
+
     get().saveTimerState();
   },
 }));

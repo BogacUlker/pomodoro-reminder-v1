@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useTimerStore, useTaskStore } from '../hooks';
 import { formatTime } from '@pomodoro/timer';
+import { notificationService } from '../services/notifications';
 import CircularProgress from '../components/timer/CircularProgress';
 import TimerControls from '../components/timer/TimerControls';
 import SessionInfo from '../components/timer/SessionInfo';
@@ -20,6 +21,7 @@ export default function TimerScreen() {
     setTimeRemaining,
     setCurrentSession,
     setTestMode,
+    completeSession,
   } = useTimerStore();
 
   const { activeTask } = useTaskStore();
@@ -46,9 +48,19 @@ export default function TimerScreen() {
     timer.start(
       duration,
       (remaining) => setTimeRemaining(remaining),
-      () => {
+      async () => {
         setStatus('completed');
-        // TODO: Add completion logic (Week 2 Day 3-4)
+
+        // Determine next timer type for notification
+        const nextType = timerType === 'work'
+          ? (currentSession >= 4 ? 'longBreak' : 'shortBreak')
+          : 'work';
+
+        // Show completion notification
+        await notificationService.showCompletionNotification(timerType, nextType);
+
+        // Progress to next session
+        completeSession();
       }
     );
   };

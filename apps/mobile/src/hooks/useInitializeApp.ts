@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTaskStore } from '../store/taskStore';
 import { useTimerStore } from '../store/timerStore';
 import { useSettingsStore } from '../store/settingsStore';
+import { notificationService } from '../services/notifications';
 
 /**
  * Initialize app by loading all persisted data
@@ -15,6 +16,9 @@ export function useInitializeApp() {
   useEffect(() => {
     async function initialize() {
       try {
+        // Request notification permissions
+        await notificationService.requestPermissions();
+
         // Load all persisted data in parallel
         await Promise.all([
           loadTasks(),
